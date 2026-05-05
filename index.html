@@ -561,10 +561,100 @@
     </div>
   </section>
 
-  <!-- ── SECTION 1: STRUCTURE ── -->
+  <!-- ── SECTION 1: PACKAGE LIBRARY ── -->
   <section class="section">
     <div class="section-header">
       <span class="section-num">01</span>
+      <h2 class="section-title">Package Library</h2>
+    </div>
+    <p class="section-desc">
+      Every package is created as a standalone object in the library — independent of where or how it will be used.
+      Its content (items, amounts, flags) is defined once. Its role is then assigned separately.
+      The same package can be a top-level product, an internal building block, or both at the same time.
+    </p>
+
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:24px;">
+      <div class="note" style="border-top:3px solid var(--purple-mid);">
+        <div class="note-label purple">Top-level</div>
+        <div class="note-text" style="margin-bottom:10px;">The package appears in the library and can be selected directly by NHC sales and quote personnel as the starting point for a solution journey.</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--purple-light);color:var(--purple-dark);padding:6px 10px;border-radius:4px;">internal: false</div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--teal-mid);">
+        <div class="note-label teal">Internal sub-package</div>
+        <div class="note-text" style="margin-bottom:10px;">The package is hidden from the top-level library. It exists solely as a building block — linked as a sub-package inside one or more parent packages.</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--teal-light);color:var(--teal-dark);padding:6px 10px;border-radius:4px;">internal: true</div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--amber-mid);">
+        <div class="note-label amber">Both</div>
+        <div class="note-text" style="margin-bottom:10px;">The package appears at the top level AND is linked as a sub-package inside other packages simultaneously. The same object serves both roles.</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--amber-light);color:var(--amber-dark);padding:6px 10px;border-radius:4px;">internal: false + linked</div>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- PACKAGE LIBRARY heading -->
+        <rect x="20" y="12" width="720" height="236" rx="12" fill="var(--gray-light)" stroke="var(--gray-mid)" stroke-width="0.5" opacity="0.5"/>
+        <text font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#888780" letter-spacing="1.5" x="34" y="28" dominant-baseline="central">PACKAGE LIBRARY</text>
+
+        <!-- Package A: top level only -->
+        <g class="c-purple">
+          <rect x="34" y="40" width="180" height="60" rx="8" stroke-width="1"/>
+          <text class="th" x="124" y="62" text-anchor="middle" dominant-baseline="central">Package A</text>
+          <text class="ts" x="124" y="80" text-anchor="middle" dominant-baseline="central">top-level · internal: false</text>
+        </g>
+
+        <!-- Package B: internal only -->
+        <g class="c-teal">
+          <rect x="290" y="40" width="180" height="60" rx="8" stroke-width="1"/>
+          <text class="th" x="380" y="62" text-anchor="middle" dominant-baseline="central">Package B</text>
+          <text class="ts" x="380" y="80" text-anchor="middle" dominant-baseline="central">internal only · internal: true</text>
+        </g>
+
+        <!-- Package C: both -->
+        <g class="c-amber">
+          <rect x="546" y="40" width="180" height="60" rx="8" stroke-width="1"/>
+          <text class="th" x="636" y="62" text-anchor="middle" dominant-baseline="central">Package C</text>
+          <text class="ts" x="636" y="80" text-anchor="middle" dominant-baseline="central">both · internal: false + linked</text>
+        </g>
+
+        <!-- Package A: shown at top level, no sub-pkg link -->
+        <rect x="34" y="138" width="180" height="36" rx="6" fill="var(--purple-light)" stroke="var(--purple-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--purple-dark)" x="124" y="156" text-anchor="middle" dominant-baseline="central">Shown at top level ✓</text>
+        <line x1="124" y1="100" x2="124" y2="138" stroke="var(--purple-mid)" stroke-width="1" marker-end="url(#arrowl)"/>
+
+        <!-- Package B: not at top level, only as sub-pkg -->
+        <rect x="290" y="138" width="180" height="36" rx="6" fill="var(--teal-light)" stroke="var(--teal-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--teal-dark)" x="380" y="156" text-anchor="middle" dominant-baseline="central">Hidden from top level</text>
+        <line x1="380" y1="100" x2="380" y2="138" stroke="var(--teal-mid)" stroke-width="1" marker-end="url(#arrowl)"/>
+        <rect x="290" y="186" width="180" height="36" rx="6" fill="var(--teal-light)" stroke="var(--teal-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--teal-dark)" x="380" y="204" text-anchor="middle" dominant-baseline="central">Available as sub-package ✓</text>
+        <line x1="380" y1="174" x2="380" y2="186" stroke="var(--teal-mid)" stroke-width="1" marker-end="url(#arrowl)"/>
+
+        <!-- Package C: both -->
+        <rect x="546" y="138" width="180" height="36" rx="6" fill="var(--amber-light)" stroke="var(--amber-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--amber-dark)" x="636" y="156" text-anchor="middle" dominant-baseline="central">Shown at top level ✓</text>
+        <line x1="636" y1="100" x2="636" y2="138" stroke="var(--amber-mid)" stroke-width="1" marker-end="url(#arrowl)"/>
+        <rect x="546" y="186" width="180" height="36" rx="6" fill="var(--amber-light)" stroke="var(--amber-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--amber-dark)" x="636" y="204" text-anchor="middle" dominant-baseline="central">Available as sub-package ✓</text>
+        <line x1="636" y1="174" x2="636" y2="186" stroke="var(--amber-mid)" stroke-width="1" marker-end="url(#arrowl)"/>
+
+        <!-- Key note -->
+        <text font-family="IBM Plex Mono, monospace" font-size="10" fill="#888780" x="34" y="242" dominant-baseline="central">Package content is defined once · role is assigned separately · the same package can serve multiple roles simultaneously</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: STRUCTURE ── -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
       <h2 class="section-title">Structure</h2>
     </div>
     <p class="section-desc">
@@ -749,7 +839,7 @@
   <!-- ── SECTION 2: CAPABILITIES & RULES ── -->
   <section class="section">
     <div class="section-header">
-      <span class="section-num">02</span>
+      <span class="section-num">03</span>
       <h2 class="section-title">Capabilities and Rules</h2>
     </div>
     <p class="section-desc">
@@ -842,7 +932,7 @@
   <!-- ── SECTION 3: LIMITATIONS ── -->
   <section class="section">
     <div class="section-header">
-      <span class="section-num">03</span>
+      <span class="section-num">04</span>
       <h2 class="section-title">Limitations</h2>
     </div>
     <p class="section-desc">
