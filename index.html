@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OSS — Package Nesting Construct · Architecture Reference</title>
+<title>OSS CPQ Architecture — Reference Document</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
 
@@ -298,11 +298,13 @@
 <!-- ══════════════ HEADER ══════════════ -->
 <header class="page-header">
   <div class="header-eyebrow">Architecture Reference</div>
-  <h1 class="header-title">Package Nesting Construct</h1>
+  <h1 class="header-title">OSS CPQ Architecture</h1>
   <p class="header-subtitle">
-    This document describes the Solution Journey model and the package nesting construct that powers it —
-    the authoritative reference for how packages are configured, quoted, ordered, and maintained
-    across the full service lifecycle within OSS.
+    The authoritative reference for OSS Configure Price Quote (CPQ).
+    CustomCall is the billing system and product catalog — the system of record for item codes,
+    base attributes, recurring charges, and MACD activity on billing items.
+    OSS is the order processing system — it wraps the package construct around CustomCall items,
+    processes orders, and feeds provisioned items back to CustomCall for billing.
   </p>
   <div class="header-meta">
     System: <span>OSS</span>
@@ -319,6 +321,53 @@
   <!-- ── SCOPE BANNER ── -->
   <div class="scope-banner">
     <div class="scope-banner-label">Scope of this construct</div>
+
+    <!-- System layers diagram -->
+    <div style="margin-bottom:24px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:18px 20px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--purple-mid);margin-bottom:14px;">System layers</div>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;">Quote Request Engine</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">roles · stages · approvals · notifications · deal pipeline</div>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--purple-mid);background:rgba(83,74,183,0.2);padding:3px 10px;border-radius:3px;">workflow layer</div>
+        </div>
+
+        <div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:2px 0;">▼</div>
+
+        <div style="background:rgba(83,74,183,0.15);border:1px solid rgba(83,74,183,0.4);border-radius:6px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;">OSS CPQ Architecture</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">package construct · solution journey · term pricing · ICB · margin gates · comp/SPIF</div>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--purple-mid);background:rgba(83,74,183,0.2);padding:3px 10px;border-radius:3px;">this document</div>
+        </div>
+
+        <div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:2px 0;">▼</div>
+
+        <div style="background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.3);border-radius:6px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;">OSS Enrichment Layer</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">OSS adds the package construct to CustomCall items — term pricing · ICB · cost basis · commissionable labels · nesting · processes orders · feeds provisioned items back to CustomCall for billing</div>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#1D9E75;background:rgba(29,158,117,0.15);padding:3px 10px;border-radius:3px;">OSS owned</div>
+        </div>
+
+        <div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:2px 0;">▼</div>
+
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);">CustomCall</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">billing system · product catalog · item codes · base attributes · recurring charges · MACD on billing items</div>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);padding:3px 10px;border-radius:3px;">billing &amp; catalog</div>
+        </div>
+
+      </div>
+    </div>
+
     <div class="scope-items">
       <div class="scope-item">
         <div class="scope-icon">Q</div>
@@ -331,7 +380,7 @@
         <div class="scope-icon">O</div>
         <div>
           <div class="scope-item-title">Ordering</div>
-          <div class="scope-item-text">When a quote converts to an order, the package configuration drives what is provisioned. The construct defines the ordered items, quantities, and service obligations that flow into fulfilment.</div>
+          <div class="scope-item-text">When a quote converts to an order, OSS processes the order and feeds the provisioned items back to CustomCall for billing. The CPQ construct defines the ordered items, quantities, and service obligations that flow through.</div>
         </div>
       </div>
       <div class="scope-item">
@@ -345,7 +394,7 @@
         <div class="scope-icon">M</div>
         <div>
           <div class="scope-item-title">MACD — Moves, Adds, Changes, Disconnects</div>
-          <div class="scope-item-text">When billing items are subject to MACD activity, the package construct is the reference for what can be modified, added to, changed, or disconnected. The rules and limitations defined here govern what NHC personnel can action on a billing item in-life.</div>
+          <div class="scope-item-text">MACD activity originates in CustomCall where billing items live. The package construct rules in OSS govern what can be modified, added to, changed, or disconnected on those billing items in-life. Locked items cannot be disconnected independently of their package.</div>
         </div>
       </div>
     </div>
@@ -1001,10 +1050,651 @@
     </div>
   </section>
 
+  <!-- ── SECTION 5: DEAL MARGIN & FINANCIAL MODEL ── -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Deal Margin &amp; Financial Model</h2>
+    </div>
+    <p class="section-desc">
+      The package construct defines what is sold and what it costs the customer.
+      The financial model defines whether the deal is viable — covering pricing floors,
+      commission and SPIF structures, margin calculation, and the gates that must be
+      passed before a quote can be issued or an order placed.
+      This model applies across quoting, ordering, supplements, and MACD activity.
+    </p>
+
+    <!-- 5.1 Item Financial Attributes -->
+    <div class="section-header" style="margin-top:32px;border-bottom-color:var(--amber-mid);">
+      <span class="section-num" style="color:var(--amber-mid)">5.1</span>
+      <h2 class="section-title" style="font-size:16px">Item Financial Attributes</h2>
+    </div>
+    <p class="section-desc">
+      Item codes and base attributes originate in <strong>CustomCall</strong> — the system of record.
+      OSS enriches those items with the CPQ-specific financial attributes below.
+      These enrichment attributes are currently missing from OSS — today they are managed
+      in a spreadsheet and keyed manually at order time.
+      Building them into OSS is the foundational fix this model depends on.
+    </p>
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:8px;">
+      <div class="note" style="border-top:3px solid var(--purple-mid);">
+        <div class="note-label purple">Term pricing (×5)</div>
+        <div class="note-text">Standard sell price for each contract term.<br><br>
+          <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;">price_12m · price_24m · price_36m · price_48m · price_60m</code><br><br>
+          Replaces the current flat <code>amount</code> field at quote time. Term is set at deal level — not per item.
+        </div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--red-mid);">
+        <div class="note-label red">ICB — minimum price (×5)</div>
+        <div class="note-text">In-Contract Baseline — the floor price per term below which a pricing approval is required.<br><br>
+          <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;">icb_12m · icb_24m · icb_36m · icb_48m · icb_60m</code><br><br>
+          Set independently of standard price. Represents cost + minimum acceptable gross margin.
+        </div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--teal-mid);">
+        <div class="note-label teal">NHC cost basis (×5)</div>
+        <div class="note-text">NHC's actual cost per term — from carrier contracts, vendor agreements, or internal cost tables.<br><br>
+          <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;">cost_12m · cost_24m · cost_36m · cost_48m · cost_60m</code><br><br>
+          Items missing cost data cannot be included in margin-calculated deals.
+        </div>
+      </div>
+    </div>
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px;">
+      <div class="note" style="border-top:3px solid var(--amber-mid);">
+        <div class="note-label amber">Commissionable label</div>
+        <div class="note-text">
+          A bucket identifier that links the item to the agent commission table.<br><br>
+          Examples: <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;">Internet MRC · SD-WAN MRC · Security MRC · Hardware · Monitoring MRC · Install</code><br><br>
+          One bucket maps to multiple agent rows with different comp and SPIF rates.
+          The full rate range for the bucket is shown at item build time so catalog
+          administrators are aware of the payout exposure.
+        </div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--gray-mid);">
+        <div class="note-label" style="color:var(--gray-mid)">Commissionable flag</div>
+        <div class="note-text">
+          <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;">commissionable: true | false</code><br><br>
+          <strong>false</strong> = item is excluded from all comp and SPIF calculations regardless of its label.
+          Use for pass-through costs, taxes, and regulatory fees.<br><br>
+          Items with <code>commissionable: false</code> still contribute to revenue and cost — and are still subject to ICB validation.
+        </div>
+      </div>
+    </div>
+
+    <!-- Catalog remediation table -->
+    <div class="note" style="margin-bottom:24px;border-left:3px solid var(--red-mid);border-radius:0 8px 8px 0;">
+      <div class="note-label red">Catalog remediation required</div>
+      <div class="note-text" style="margin-bottom:12px;">The following attributes must be added to every item before the financial model can operate.</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="background:var(--red-light);">
+            <th style="text-align:left;padding:6px 10px;border:1px solid #f0c0c0;">Attribute</th>
+            <th style="text-align:left;padding:6px 10px;border:1px solid #f0c0c0;">Source</th>
+            <th style="text-align:left;padding:6px 10px;border:1px solid #f0c0c0;">Owner</th>
+            <th style="text-align:left;padding:6px 10px;border:1px solid #f0c0c0;">Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:6px 10px;border:1px solid #f0c0c0;">price_12m – price_60m</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Pricing spreadsheet</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Product</td><td style="padding:6px 10px;border:1px solid #f0c0c0;color:var(--red-mid);font-weight:600;">High</td></tr>
+          <tr style="background:var(--gray-light);"><td style="padding:6px 10px;border:1px solid #f0c0c0;">icb_12m – icb_60m</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Pricing spreadsheet</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Product / Finance</td><td style="padding:6px 10px;border:1px solid #f0c0c0;color:var(--red-mid);font-weight:600;">High</td></tr>
+          <tr><td style="padding:6px 10px;border:1px solid #f0c0c0;">cost_12m – cost_60m</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Vendor contracts / Finance</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Finance</td><td style="padding:6px 10px;border:1px solid #f0c0c0;color:var(--red-mid);font-weight:600;">High</td></tr>
+          <tr style="background:var(--gray-light);"><td style="padding:6px 10px;border:1px solid #f0c0c0;">commissionable_label</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Commission team</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Commission / Product</td><td style="padding:6px 10px;border:1px solid #f0c0c0;color:var(--red-mid);font-weight:600;">High</td></tr>
+          <tr><td style="padding:6px 10px;border:1px solid #f0c0c0;">commissionable flag</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Commission team</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Commission / Product</td><td style="padding:6px 10px;border:1px solid #f0c0c0;color:var(--red-mid);font-weight:600;">High</td></tr>
+          <tr style="background:var(--gray-light);"><td style="padding:6px 10px;border:1px solid #f0c0c0;">Agent table — term rates</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Commission team</td><td style="padding:6px 10px;border:1px solid #f0c0c0;">Commission</td><td style="padding:6px 10px;border:1px solid #f0c0c0;color:var(--amber-mid);font-weight:600;">Medium</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5.2 Commission Bucket -->
+    <div class="section-header" style="margin-top:32px;border-bottom-color:var(--amber-mid);">
+      <span class="section-num" style="color:var(--amber-mid)">5.2</span>
+      <h2 class="section-title" style="font-size:16px">Commission Bucket &amp; Agent Table</h2>
+    </div>
+    <p class="section-desc">
+      Each item's commissionable label links to the agent commission table.
+      One bucket maps to multiple agent rows — different agents have different rates for the same bucket.
+      Term-based rates incentivise longer commitments with higher comp and SPIF payouts.
+      The full rate range for a bucket is shown at item build time in the package builder.
+    </p>
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px;">
+      <div class="note">
+        <div class="note-label amber">Agent commission row</div>
+        <div class="note-text" style="font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:2;">
+          agent_id<br>
+          commission_bucket<br>
+          comp_pct (flat fallback)<br>
+          spif_multiplier (flat fallback)<br>
+          spif_cap<br>
+          term_12m_comp_pct · spif_mult<br>
+          term_24m_comp_pct · spif_mult<br>
+          term_36m_comp_pct · spif_mult<br>
+          term_48m_comp_pct · spif_mult<br>
+          term_60m_comp_pct · spif_mult<br>
+          effective_date · expiry_date
+        </div>
+      </div>
+      <div class="note">
+        <div class="note-label amber">Catalog visibility — shown at item build time</div>
+        <div class="note-text">
+          When an item is created or edited, OSS must look up all active agent rows
+          for that item's commissionable label and display the exposure range.<br><br>
+          <div style="background:var(--amber-light);border-radius:4px;padding:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;">
+            Bucket: Internet MRC<br>
+            Agent comp range:  8% – 15%<br>
+            SPIF range:        1x – 3x MRC<br>
+            At $49.95/mo:<br>
+            &nbsp;&nbsp;Min comp: $4.00/mo<br>
+            &nbsp;&nbsp;Max comp: $7.49/mo<br>
+            &nbsp;&nbsp;Max SPIF: $149.85 (3x)
+          </div>
+          <br>Informational only — does not block item creation.
+        </div>
+      </div>
+    </div>
+
+    <!-- 5.3 Deal Gates -->
+    <div class="section-header" style="margin-top:32px;border-bottom-color:var(--red-mid);">
+      <span class="section-num" style="color:var(--red-mid)">5.3</span>
+      <h2 class="section-title" style="font-size:16px">Deal Gates</h2>
+    </div>
+    <p class="section-desc">
+      Two financial gates must pass before a quote can be issued.
+      Both are evaluated continuously during configuration — not only at submission.
+    </p>
+
+    <div class="diagram-card" style="margin-bottom:24px;">
+      <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- Deal configured -->
+        <g class="c-purple">
+          <rect x="20" y="110" width="120" height="48" rx="8" stroke-width="1"/>
+          <text class="th" x="80" y="128" text-anchor="middle" dominant-baseline="central">Deal</text>
+          <text class="ts" x="80" y="146" text-anchor="middle" dominant-baseline="central">configured</text>
+        </g>
+        <line x1="140" y1="134" x2="168" y2="134" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arrowf)"/>
+
+        <!-- Gate 1: ICB -->
+        <g class="c-red">
+          <rect x="170" y="90" width="140" height="88" rx="8" stroke-width="1"/>
+          <text class="th" x="240" y="114" text-anchor="middle" dominant-baseline="central">Gate 1</text>
+          <text class="th" x="240" y="132" text-anchor="middle" dominant-baseline="central">ICB Check</text>
+          <text class="ts" x="240" y="152" text-anchor="middle" dominant-baseline="central">quoted price</text>
+          <text class="ts" x="240" y="167" text-anchor="middle" dominant-baseline="central">≥ ICB per term</text>
+        </g>
+        <!-- fail path -->
+        <line x1="240" y1="178" x2="240" y2="220" stroke="#A32D2D" stroke-width="1" marker-end="url(#arrowf)"/>
+        <g class="c-red">
+          <rect x="170" y="222" width="140" height="36" rx="6" stroke-width="0.5"/>
+          <text class="ts" x="240" y="240" text-anchor="middle" dominant-baseline="central">Pricing approval</text>
+        </g>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#A32D2D" x="248" y="205" dominant-baseline="central">FAIL</text>
+
+        <!-- pass arrow -->
+        <line x1="310" y1="134" x2="338" y2="134" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#arrowf)"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1D9E75" x="316" y="124" dominant-baseline="central">PASS</text>
+
+        <!-- Gate 2: Margin -->
+        <g class="c-amber">
+          <rect x="340" y="70" width="160" height="128" rx="8" stroke-width="1"/>
+          <text class="th" x="420" y="96" text-anchor="middle" dominant-baseline="central">Gate 2</text>
+          <text class="th" x="420" y="114" text-anchor="middle" dominant-baseline="central">Margin Check</text>
+          <text class="ts" x="420" y="136" text-anchor="middle" dominant-baseline="central">≥ 28% Healthy</text>
+          <text class="ts" x="420" y="152" text-anchor="middle" dominant-baseline="central">15–27% Flag</text>
+          <text class="ts" x="420" y="168" text-anchor="middle" dominant-baseline="central">&lt; 15% Approval</text>
+          <text class="ts" x="420" y="184" text-anchor="middle" dominant-baseline="central">&lt; 0% Hard block</text>
+        </g>
+        <!-- fail path -->
+        <line x1="420" y1="198" x2="420" y2="222" stroke="#BA7517" stroke-width="1" marker-end="url(#arrowf)"/>
+        <g class="c-amber">
+          <rect x="350" y="224" width="140" height="36" rx="6" stroke-width="0.5"/>
+          <text class="ts" x="420" y="242" text-anchor="middle" dominant-baseline="central">Deal approval</text>
+        </g>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#BA7517" x="428" y="210" dominant-baseline="central">FLAG/BLOCK</text>
+
+        <!-- pass arrow -->
+        <line x1="500" y1="134" x2="528" y2="134" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#arrowf)"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1D9E75" x="506" y="124" dominant-baseline="central">PASS</text>
+
+        <!-- Quote issued -->
+        <g class="c-teal">
+          <rect x="530" y="110" width="120" height="48" rx="8" stroke-width="1"/>
+          <text class="th" x="590" y="128" text-anchor="middle" dominant-baseline="central">Quote</text>
+          <text class="ts" x="590" y="146" text-anchor="middle" dominant-baseline="central">can be issued</text>
+        </g>
+
+        <!-- Install check below -->
+        <rect x="530" y="192" width="200" height="60" rx="6" fill="var(--gray-light)" stroke="var(--gray-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="600" fill="var(--gray-dark)" x="542" y="212" dominant-baseline="central">Install viability check</text>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--gray-mid)" x="542" y="230" dominant-baseline="central">if install_cost &gt; MRR → flag</text>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--gray-mid)" x="542" y="246" dominant-baseline="central">shown separately alongside margin</text>
+
+        <text font-family="IBM Plex Mono, monospace" font-size="10" fill="#888780" x="20" y="272">Both gates are evaluated continuously during configuration · margin thresholds are placeholders pending Finance sign-off</text>
+      </svg>
+    </div>
+
+    <!-- 5.4 Margin Calculation -->
+    <div class="section-header" style="margin-top:32px;border-bottom-color:var(--amber-mid);">
+      <span class="section-num" style="color:var(--amber-mid)">5.4</span>
+      <h2 class="section-title" style="font-size:16px">Margin Calculation</h2>
+    </div>
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px;">
+      <div class="note">
+        <div class="note-label amber">Formula</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:2;color:var(--text);">
+          deal_revenue = Σ (item_price × qty)<br>
+          deal_cost &nbsp;&nbsp;= Σ (item_cost × qty)<br>
+          deal_comp &nbsp;&nbsp;= Σ (item_price × qty × comp%)<br>
+          deal_spif &nbsp;&nbsp;= Σ (item_price × spif_mult)<br><br>
+          gross_margin = (revenue − cost) / revenue<br>
+          net_margin &nbsp;= (revenue − cost − comp − spif) / revenue
+        </div>
+      </div>
+      <div class="note">
+        <div class="note-label amber">Rules</div>
+        <div class="note-text">
+          Margin is calculated at the <strong>deal level</strong> — not per item or per package.<br><br>
+          Override-repriced items use the override price in that deal context.<br><br>
+          Items with <code style="font-family:'IBM Plex Mono',monospace;">commissionable: false</code> contribute to revenue and cost but not comp or SPIF.<br><br>
+          SPIF is a one-time payout — shown as a deal-level cost, not recurring.<br><br>
+          Install margin is shown separately alongside recurring margin.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── SECTION 6: QUOTE REQUEST ENGINE ── -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Quote Request Engine</h2>
+    </div>
+    <p class="section-desc">
+      The Quote Request Engine is the workflow layer that sits on top of the CPQ architecture.
+      It governs how deals move through stages, which roles own each stage, what gates must
+      pass before advancement, and how approvals and notifications are triggered.
+      When a deal is won, OSS processes the order and feeds the provisioned items back to
+      CustomCall for billing. MACD activity on those billing items is governed by the
+      package construct rules defined in this document.
+    </p>
+
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;margin-bottom:24px;">
+      <div class="note" style="border-top:3px solid var(--blue);">
+        <div class="note-label" style="color:var(--blue)">CM — Channel Manager</div>
+        <div class="note-text">Owns deal creation and initial configuration. Selects core package and navigates the solution journey. Sees ICB and margin gates in real time during configuration.</div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--purple-mid);">
+        <div class="note-label purple">SE — Sales Engineering</div>
+        <div class="note-text">Auto-triggered on complex service types — SD-WAN, Security. Validates technical specifications and feasibility. Required sign-off before deal can advance to contract.</div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--teal-mid);">
+        <div class="note-label teal">QD — Quote Desk</div>
+        <div class="note-text">Reviews and issues the formal quote. Validates that all CPQ gates have passed. Cannot issue a quote if ICB violations or margin blocks are unresolved.</div>
+      </div>
+      <div class="note" style="border-top:3px solid var(--amber-mid);">
+        <div class="note-label amber">Orders</div>
+        <div class="note-text">Auto-populated when a deal is marked Won. Receives the resolved package configuration and item codes for fulfilment. Item codes flow back to CustomCall.</div>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowe" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- Stage 1: Configure -->
+        <g class="c-purple">
+          <rect x="20" y="40" width="120" height="80" rx="8" stroke-width="1"/>
+          <text class="th" x="80" y="64" text-anchor="middle" dominant-baseline="central">Configure</text>
+          <text class="ts" x="80" y="82" text-anchor="middle" dominant-baseline="central">CM selects</text>
+          <text class="ts" x="80" y="98" text-anchor="middle" dominant-baseline="central">package + journey</text>
+        </g>
+        <!-- gate below -->
+        <g class="c-red">
+          <rect x="20" y="134" width="120" height="30" rx="4" stroke-width="0.5"/>
+          <text class="ts" x="80" y="149" text-anchor="middle" dominant-baseline="central">ICB gate</text>
+        </g>
+        <g class="c-amber">
+          <rect x="20" y="168" width="120" height="30" rx="4" stroke-width="0.5"/>
+          <text class="ts" x="80" y="183" text-anchor="middle" dominant-baseline="central">Margin gate</text>
+        </g>
+        <line x1="140" y1="80" x2="168" y2="80" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arrowe)"/>
+
+        <!-- Stage 2: SE Review (conditional) -->
+        <g class="c-purple">
+          <rect x="170" y="40" width="120" height="80" rx="8" stroke-width="0.5" stroke-dasharray="4 3"/>
+          <text class="th" x="230" y="64" text-anchor="middle" dominant-baseline="central">SE Review</text>
+          <text class="ts" x="230" y="82" text-anchor="middle" dominant-baseline="central">SD-WAN · Security</text>
+          <text class="ts" x="230" y="98" text-anchor="middle" dominant-baseline="central">auto-triggered</text>
+        </g>
+        <rect x="170" y="134" width="120" height="30" rx="4" fill="var(--purple-light)" stroke="var(--purple-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--purple-dark)" x="230" y="149" text-anchor="middle" dominant-baseline="central">SE sign-off gate</text>
+        <line x1="290" y1="80" x2="318" y2="80" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arrowe)"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="600" fill="#534AB7" x="173" y="32" dominant-baseline="central">conditional — complex products only</text>
+
+        <!-- Stage 3: Quote -->
+        <g class="c-teal">
+          <rect x="320" y="40" width="120" height="80" rx="8" stroke-width="1"/>
+          <text class="th" x="380" y="64" text-anchor="middle" dominant-baseline="central">Quote</text>
+          <text class="ts" x="380" y="82" text-anchor="middle" dominant-baseline="central">QD reviews</text>
+          <text class="ts" x="380" y="98" text-anchor="middle" dominant-baseline="central">and issues</text>
+        </g>
+        <g class="c-teal">
+          <rect x="320" y="134" width="120" height="30" rx="4" stroke-width="0.5"/>
+          <text class="ts" x="380" y="149" text-anchor="middle" dominant-baseline="central">All gates resolved</text>
+        </g>
+        <line x1="440" y1="80" x2="468" y2="80" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#arrowe)"/>
+
+        <!-- Stage 4: Contract -->
+        <g class="c-teal">
+          <rect x="470" y="40" width="120" height="80" rx="8" stroke-width="0.5"/>
+          <text class="th" x="530" y="64" text-anchor="middle" dominant-baseline="central">Contract</text>
+          <text class="ts" x="530" y="82" text-anchor="middle" dominant-baseline="central">approval logged</text>
+          <text class="ts" x="530" y="98" text-anchor="middle" dominant-baseline="central">deal signed</text>
+        </g>
+        <line x1="590" y1="80" x2="618" y2="80" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#arrowe)"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="600" fill="#1D9E75" x="594" y="68" dominant-baseline="central">Won</text>
+
+        <!-- Stage 5: Orders -->
+        <g class="c-amber">
+          <rect x="620" y="40" width="120" height="80" rx="8" stroke-width="1"/>
+          <text class="th" x="680" y="64" text-anchor="middle" dominant-baseline="central">Orders</text>
+          <text class="ts" x="680" y="76" text-anchor="middle" dominant-baseline="central">OSS processes</text>
+          <text class="ts" x="680" y="92" text-anchor="middle" dominant-baseline="central">order · feeds</text>
+          <text class="ts" x="680" y="108" text-anchor="middle" dominant-baseline="central">CustomCall billing</text>
+        </g>
+
+        <!-- CPQ rules enforcement note -->
+        <rect x="20" y="218" width="720" height="40" rx="6" fill="var(--purple-light)" stroke="var(--purple-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="600" fill="var(--purple-dark)" x="34" y="232" dominant-baseline="central">CPQ rules enforcement:</text>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="12" fill="var(--purple-dark)" x="180" y="232" dominant-baseline="central">ICB gate → cannot advance to quote · Margin block → approval required · SE gate → sign-off required for complex products</text>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="12" fill="var(--purple-dark)" x="34" y="250" dominant-baseline="central">MACD: package construct rules govern what can be changed on a billing item in-life · locked items cannot be disconnected independently</text>
+
+        <text font-family="IBM Plex Mono, monospace" font-size="10" fill="#888780" x="20" y="280">Quote Request Engine workflow — detail design TBD · CPQ architecture is the enforcement layer</text>
+      </svg>
+    </div>
+
+    <div class="notes-grid" style="margin-top:20px;">
+      <div class="note" style="border-left:3px solid var(--purple-mid);border-radius:0 8px 8px 0;">
+        <div class="note-label purple">CPQ gates enforced by the engine</div>
+        <div class="note-text">
+          <strong>Cannot advance to quote:</strong> ICB violation unresolved or margin hard block.<br><br>
+          <strong>Cannot advance to contract:</strong> SE sign-off pending on SD-WAN or Security products.<br><br>
+          <strong>Cannot place order:</strong> Quote approval not logged.<br><br>
+          <strong>MACD blocked:</strong> Package construct rules prevent the requested change — locked items cannot be disconnected independently of their package.
+        </div>
+      </div>
+      <div class="note" style="border-left:3px solid var(--amber-mid);border-radius:0 8px 8px 0;">
+        <div class="note-label amber">Pending — Quote Request Engine detail design</div>
+        <div class="note-text">
+          The stage definitions, role permissions, notification rules, and approval workflow
+          detail for the Quote Request Engine are not yet specified in this document.<br><br>
+          The CPQ architecture (Sections 00–05) defines the rules the engine must enforce.
+          The engine's own workflow design is a separate deliverable that references this document
+          as its data and rules layer.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 7: PROJECT PHASING ── -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Project Phasing</h2>
+    </div>
+    <p class="section-desc">
+      None of this architecture is currently in place. The following phasing is recommended
+      based on the dependency order of the constructs defined in this document.
+      Phases 1 and 2 are foundational — nothing in Phase 3 onwards can be built accurately
+      without them. Phases 3 and 4 can begin in parallel once Phase 2 is sufficiently populated.
+      The pending decisions in Section 08 must be resolved before Phase 4 development begins.
+    </p>
+
+    <!-- Phase timeline diagram -->
+    <div class="diagram-card" style="margin-bottom:24px;">
+      <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- Phase boxes -->
+        <g class="c-red">
+          <rect x="20" y="30" width="108" height="56" rx="8" stroke-width="1"/>
+          <text class="th" x="74" y="52" text-anchor="middle" dominant-baseline="central">Phase 1</text>
+          <text class="ts" x="74" y="70" text-anchor="middle" dominant-baseline="central">Foundation</text>
+        </g>
+        <line x1="128" y1="58" x2="148" y2="58" stroke="#888780" stroke-width="1.5" marker-end="url(#arrowp)"/>
+
+        <g class="c-amber">
+          <rect x="150" y="30" width="108" height="56" rx="8" stroke-width="1"/>
+          <text class="th" x="204" y="52" text-anchor="middle" dominant-baseline="central">Phase 2</text>
+          <text class="ts" x="204" y="70" text-anchor="middle" dominant-baseline="central">Catalog enrichment</text>
+        </g>
+        <line x1="258" y1="58" x2="278" y2="58" stroke="#888780" stroke-width="1.5" marker-end="url(#arrowp)"/>
+
+        <g class="c-teal">
+          <rect x="280" y="30" width="108" height="56" rx="8" stroke-width="1"/>
+          <text class="th" x="334" y="52" text-anchor="middle" dominant-baseline="central">Phase 3</text>
+          <text class="ts" x="334" y="70" text-anchor="middle" dominant-baseline="central">Package construct</text>
+        </g>
+        <line x1="388" y1="58" x2="408" y2="58" stroke="#888780" stroke-width="1.5" marker-end="url(#arrowp)"/>
+
+        <g class="c-purple">
+          <rect x="410" y="30" width="108" height="56" rx="8" stroke-width="1"/>
+          <text class="th" x="464" y="52" text-anchor="middle" dominant-baseline="central">Phase 4</text>
+          <text class="ts" x="464" y="70" text-anchor="middle" dominant-baseline="central">CPQ engine</text>
+        </g>
+        <line x1="518" y1="58" x2="538" y2="58" stroke="#888780" stroke-width="1.5" marker-end="url(#arrowp)"/>
+
+        <g class="c-teal">
+          <rect x="540" y="30" width="108" height="56" rx="8" stroke-width="1"/>
+          <text class="th" x="594" y="52" text-anchor="middle" dominant-baseline="central">Phase 5</text>
+          <text class="ts" x="594" y="70" text-anchor="middle" dominant-baseline="central">Quote engine</text>
+        </g>
+        <line x1="648" y1="58" x2="668" y2="58" stroke="#888780" stroke-width="1.5" marker-end="url(#arrowp)"/>
+
+        <g class="c-gray">
+          <rect x="670" y="30" width="70" height="56" rx="8" stroke-width="1"/>
+          <text class="th" x="705" y="52" text-anchor="middle" dominant-baseline="central">Phase 6</text>
+          <text class="ts" x="705" y="70" text-anchor="middle" dominant-baseline="central">MACD</text>
+        </g>
+
+        <!-- Parallel track indicator -->
+        <rect x="280" y="106" width="238" height="24" rx="4" fill="var(--teal-light)" stroke="var(--teal-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--teal-dark)" x="399" y="118" text-anchor="middle" dominant-baseline="central">Phases 3 + 4 can run in parallel once Phase 2 is sufficiently populated</text>
+
+        <!-- Pending decisions gate -->
+        <rect x="410" y="140" width="238" height="24" rx="4" fill="var(--amber-light)" stroke="var(--amber-mid)" stroke-width="0.5"/>
+        <text font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--amber-dark)" x="529" y="152" text-anchor="middle" dominant-baseline="central">Section 08 pending decisions must be resolved before Phase 4</text>
+
+        <!-- Critical path note -->
+        <text font-family="IBM Plex Mono, monospace" font-size="10" fill="#888780" x="20" y="182">Critical path: CustomCall item audit (Phase 1) · everything downstream depends on knowing what items exist and what data is missing</text>
+      </svg>
+    </div>
+
+    <!-- Phase details -->
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:14px;">
+
+      <div class="note" style="border-top:3px solid var(--red-mid);">
+        <div class="note-label red">Phase 1 — Foundation</div>
+        <div class="note-text">
+          <strong>Must happen first. Everything depends on this.</strong><br><br>
+          <strong>1. CustomCall item audit</strong><br>
+          Inventory every item code. Identify gaps in base attributes.
+          Flag items missing cost and pricing data.
+          This is the single most important first step — nothing else
+          can be built accurately without it.<br><br>
+          <strong>2. OSS data model</strong><br>
+          Build the package object, item object, and all financial
+          attributes defined in this document. Schema work only —
+          no UI yet.<br><br>
+          <strong>3. Commissionable label taxonomy</strong><br>
+          Agree and define the commission bucket names with the
+          commission team. Unblocks agent table build and
+          catalog enrichment simultaneously.
+        </div>
+      </div>
+
+      <div class="note" style="border-top:3px solid var(--amber-mid);">
+        <div class="note-label amber">Phase 2 — Catalog enrichment</div>
+        <div class="note-text">
+          <strong>Runs alongside Phase 1 tail. Start with highest volume packages.</strong><br><br>
+          <strong>4. Term pricing population</strong><br>
+          Migrate spreadsheet pricing into OSS per item per term.<br><br>
+          <strong>5. ICB population</strong><br>
+          Finance sets ICB floors per item per term.<br><br>
+          <strong>6. Cost basis population</strong><br>
+          Finance populates NHC cost per item per term from
+          vendor contracts.<br><br>
+          <strong>7. Agent table build</strong><br>
+          Commission team builds agent commission rows with
+          term-based rates per bucket.
+        </div>
+      </div>
+
+      <div class="note" style="border-top:3px solid var(--teal-mid);">
+        <div class="note-label teal">Phase 3 — Package construct</div>
+        <div class="note-text">
+          <strong>Can begin once data model exists and catalog is partially populated.</strong><br><br>
+          <strong>8. Package builder UI</strong><br>
+          Build the package manager. Real data, not mock.<br><br>
+          <strong>9. Core packages</strong><br>
+          Build Internet, Managed Router, SD-WAN, Security using
+          real CustomCall item codes.<br><br>
+          <strong>10. Solution journey configuration</strong><br>
+          Wire choose-one groups, sub-package nesting, and the
+          NHC / Customer supply gate for Internet.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:0;">
+
+      <div class="note" style="border-top:3px solid var(--purple-mid);">
+        <div class="note-label purple">Phase 4 — CPQ engine</div>
+        <div class="note-text">
+          <strong>Pending decisions (Section 08) must be resolved first.</strong><br><br>
+          <strong>11. Pricing resolution</strong><br>
+          Term selection drives item price. Override repricing in context.<br><br>
+          <strong>12. ICB gate</strong><br>
+          Real-time validation. Surface violations during
+          configuration, not at submission.<br><br>
+          <strong>13. Margin calculator</strong><br>
+          Live gross and net margin. Comp and SPIF from agent table.<br><br>
+          <strong>14. Margin gates</strong><br>
+          Healthy / at-risk / block thresholds. Approval workflow
+          for below-floor deals.
+        </div>
+      </div>
+
+      <div class="note" style="border-top:3px solid var(--teal-mid);">
+        <div class="note-label teal">Phase 5 — Quote Request Engine</div>
+        <div class="note-text">
+          <strong>Requires Phase 4 gates to be operational.</strong><br><br>
+          <strong>15. Stage model</strong><br>
+          Configure → SE Review → Quote → Contract → Orders.<br><br>
+          <strong>16. Role-based views</strong><br>
+          CM, SE, QD, Orders each see their stage.<br><br>
+          <strong>17. SE auto-trigger</strong><br>
+          SD-WAN and Security route to SE queue automatically.<br><br>
+          <strong>18. Approval workflows</strong><br>
+          ICB exception, margin approval, SE sign-off. All logged.<br><br>
+          <strong>19. CustomCall feed</strong><br>
+          Provisioned items flow to CustomCall for billing on Won.
+        </div>
+      </div>
+
+      <div class="note" style="border-top:3px solid var(--gray-mid);">
+        <div class="note-label" style="color:var(--gray-mid)">Phase 6 — MACD</div>
+        <div class="note-text">
+          <strong>Requires Phases 4 and 5 to be operational.</strong><br><br>
+          <strong>20. MACD rules enforcement</strong><br>
+          Package construct rules applied to in-life billing item
+          changes in CustomCall. Locked items protected.
+          Supplement journey follows the same CPQ path as
+          a new quote — same gates, same approvals,
+          same package construct rules.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 8: PENDING DECISIONS ── -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Pending Decisions</h2>
+    </div>
+    <p class="section-desc">
+      The following items require business and finance sign-off before development can be finalised.
+      Data structures are designed to support any of the options below without redesign.
+      These are explicitly parked — do not implement until decisions are confirmed.
+    </p>
+
+    <div class="notes-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="note" style="border-left:3px solid var(--amber-mid);border-radius:0 8px 8px 0;">
+        <div class="note-label amber">Does margin cap comp and SPIF payout?</div>
+        <div class="note-text">
+          <strong>Option A — Margin is a gate only</strong><br>
+          Term rate is always paid if the deal is approved. Margin determines approval, not payout size.<br><br>
+          <strong>Option B — Margin is a ceiling</strong><br>
+          Term sets the target rate. Available margin sets the maximum that can actually be paid.<br>
+          Payout = min(term rate, margin-available rate).<br><br>
+          <em>Decision required: Finance / Commission team</em>
+        </div>
+      </div>
+      <div class="note" style="border-left:3px solid var(--amber-mid);border-radius:0 8px 8px 0;">
+        <div class="note-label amber">When margin is thin — what gets cut first?</div>
+        <div class="note-text">
+          If Option B above is selected and available margin cannot cover both full comp and full SPIF:<br><br>
+          • SPIF cut first, comp protected<br>
+          • Comp cut first, SPIF protected<br>
+          • Both reduced proportionally<br>
+          • Manual decision by approver<br><br>
+          <em>Decision required: Finance / Commission team</em>
+        </div>
+      </div>
+      <div class="note" style="border-left:3px solid var(--red-mid);border-radius:0 8px 8px 0;">
+        <div class="note-label red">Should ICB factor in max comp and SPIF exposure?</div>
+        <div class="note-text">
+          Currently ICB = cost + minimum margin floor (independent of comp/SPIF).<br><br>
+          Alternative: ICB = cost + max comp exposure + max SPIF exposure + minimum margin floor.<br><br>
+          Trade-off: higher ICB floors guarantee deal viability at any payout but may reduce pricing competitiveness.<br><br>
+          <em>Decision required: Finance / Product</em>
+        </div>
+      </div>
+      <div class="note" style="border-left:3px solid var(--red-mid);border-radius:0 8px 8px 0;">
+        <div class="note-label red">Confirmed margin thresholds</div>
+        <div class="note-text">
+          Current placeholders (from deal calculator):<br><br>
+          • Healthy: ≥ 28%<br>
+          • At risk: 15–27%<br>
+          • Below floor: &lt; 15%<br>
+          • Hard block: &lt; 0%<br><br>
+          These may need to vary by service type or commission bucket.<br><br>
+          <em>Decision required: Finance</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="page-footer">
-  OSS · Package Nesting Construct · Architecture Reference
+  OSS CPQ Architecture · Configure · Price · Quote
 </footer>
 
 </body>
