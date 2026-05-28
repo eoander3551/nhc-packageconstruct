@@ -291,6 +291,129 @@
     color: var(--text-muted);
     line-height: 1.65;
   }
+
+  /* ── TABS ── */
+  .tab-nav {
+    background: var(--navy-mid);
+    display: flex;
+    gap: 0;
+    padding: 0 40px;
+    border-bottom: 2px solid var(--purple-mid);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 14px 24px;
+    transition: all 0.15s;
+    margin-bottom: -2px;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: rgba(255,255,255,0.85); }
+  .tab-btn.active {
+    color: #fff;
+    border-bottom-color: var(--purple-mid);
+    font-weight: 600;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── DEV RULES TAB ── */
+  .rules-main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+  .rules-section {
+    margin-bottom: 48px;
+  }
+  .rules-section h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--purple-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rules-section h2 .rules-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--purple-mid);
+    letter-spacing: 1px;
+  }
+  .rules-section p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.7;
+  }
+  .rules-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+  .rules-table th {
+    background: var(--navy);
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+  }
+  .rules-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .rules-table tr:nth-child(even) td { background: var(--gray-light); }
+  .rules-table code, .rules-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--purple-light);
+    color: var(--purple-dark);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .code-block {
+    background: var(--navy);
+    color: #c8d8f0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .rules-note {
+    background: var(--amber-light);
+    border-left: 3px solid var(--amber-mid);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: var(--amber-dark);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .rules-note strong { font-weight: 700; }
+
 </style>
 </head>
 <body>
@@ -315,6 +438,12 @@
   </div>
 </header>
 
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('architecture')">⊙ Architecture</button>
+  <button class="tab-btn" onclick="switchTab('devrules')">{ } Developer Rules</button>
+</nav>
+
+<div id="tab-architecture" class="tab-panel active">
 <!-- ══════════════ MAIN ══════════════ -->
 <main class="main">
 
@@ -1026,11 +1155,11 @@
         </g>
         <g class="c-gray">
           <rect x="247" y="224" width="186" height="188" rx="10" stroke-width="0.5"/>
-          <text class="th" x="340" y="250" text-anchor="middle" dominant-baseline="central">No cross-pkg items</text>
-          <text class="ts" x="340" y="276" text-anchor="middle" dominant-baseline="central">An item belongs to one</text>
-          <text class="ts" x="340" y="294" text-anchor="middle" dominant-baseline="central">package. Shared items</text>
-          <text class="ts" x="340" y="312" text-anchor="middle" dominant-baseline="central">require a shared</text>
-          <text class="ts" x="340" y="330" text-anchor="middle" dominant-baseline="central">sub-package.</text>
+          <text class="th" x="340" y="250" text-anchor="middle" dominant-baseline="central">Anchor codes are unique</text>
+          <text class="ts" x="340" y="276" text-anchor="middle" dominant-baseline="central">No two packages can</text>
+          <text class="ts" x="340" y="294" text-anchor="middle" dominant-baseline="central">share the same anchor</text>
+          <text class="ts" x="340" y="312" text-anchor="middle" dominant-baseline="central">item code. Regular items</text>
+          <text class="ts" x="340" y="330" text-anchor="middle" dominant-baseline="central">can appear in many packages.</text>
         </g>
         <g class="c-gray">
           <rect x="453" y="224" width="186" height="188" rx="10" stroke-width="0.5"/>
@@ -1644,6 +1773,20 @@
       These are explicitly parked — do not implement until decisions are confirmed.
     </p>
 
+    <!-- Resolved decision -->
+    <div class="note" style="border-left:3px solid var(--teal-mid);border-radius:0 8px 8px 0;margin-bottom:24px;">
+      <div class="note-label teal">✓ Resolved — Item pricing model</div>
+      <div class="note-text">
+        <strong>Decision:</strong> Pricing attributes live on the catalog item and are shared
+        across all packages that include that item. There is no package-level price override.<br><br>
+        <strong>Rule:</strong> If the same service component requires a different price structure
+        in a specific package context, a new item code is created. The package override model
+        handles contextual deactivation and flag changes only — not pricing differences.<br><br>
+        <strong>Impact:</strong> Simplifies the data model. Catalog is the single source of
+        truth for pricing. Price changes propagate automatically to all packages.
+      </div>
+    </div>
+
     <div class="notes-grid" style="grid-template-columns:1fr 1fr;">
       <div class="note" style="border-left:3px solid var(--amber-mid);border-radius:0 8px 8px 0;">
         <div class="note-label amber">Does margin cap comp and SPIF payout?</div>
@@ -1693,9 +1836,313 @@
 
 </main>
 
+</div><!-- end tab-architecture -->
+
+<div id="tab-devrules" class="tab-panel">
+<div class="rules-main">
+
+  <div style="margin-bottom:32px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--purple-mid);margin-bottom:8px;">Developer Reference</div>
+    <h1 style="font-size:28px;font-weight:600;color:var(--navy);margin-bottom:10px;">OSS Package &amp; CPQ Rules</h1>
+    <p style="font-size:14px;color:var(--text-muted);max-width:680px;line-height:1.7;">
+      Complete data structures, validation rules, and calculation logic for backend development.
+      Load this alongside your backend data constructs. All rules here apply across quoting,
+      ordering, supplements, and MACD activity.
+    </p>
+  </div>
+
+  <!-- R1: Package Object -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R1</span> Package Object</h2>
+    <div class="code-block">Package {
+  id                    // unique identifier
+  code                  // item code — must match anchor item code
+                        // must be unique across all packages
+  name                  // display name
+  amount                // core service charge (carried by anchor item)
+  serviceType           // derived from anchor item code attribute (read-only at order time)
+  billingOverride       // Yes | No
+  required              // bool
+  chooseOne             // bool
+  quoteReq              // bool — quote required before ordering
+  deliveryReq           // bool — delivery confirmation required
+  internal              // bool — false = top level | true = sub-package only
+  subPackageIds         // array of package IDs linked as sub-packages
+  subPkgChooseOneGroup  // string | null — if set, sub-packages form a choose-one group
+  overrides             // map — per sub-package item overrides (see R7)
+  items                 // array of Item objects (see R2)
+}</div>
+  </div>
+
+  <!-- R2: Item Object -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R2</span> Item Object</h2>
+    <p>Regular items can appear in multiple packages independently. Only the anchor item code must be unique across packages.</p>
+    <div class="code-block">Item {
+  id                    // unique identifier
+  code                  // item code
+                        // if this is the anchor item: must be unique across all packages
+  name                  // display name
+  amount                // individual item price ($0 is valid) — flat fallback
+  price_12m             // standard sell price at 12-month term
+  price_24m             // standard sell price at 24-month term
+  price_36m             // standard sell price at 36-month term
+  price_48m             // standard sell price at 48-month term
+  price_60m             // standard sell price at 60-month term
+  icb_12m               // minimum allowable sell price at 12-month term
+  icb_24m / 36m / 48m / 60m
+  cost_12m              // NHC cost at 12-month term
+  cost_24m / 36m / 48m / 60m
+  billingOverride       // Yes | No
+  required              // bool
+  chooseOne             // bool
+  quoteReq              // bool
+  deliveryReq           // bool
+  coGroup               // string | '' — items sharing this string form a choose-one group
+  minQty                // int — minimum orderable quantity (auto-set from flags)
+  maxQty                // int — maximum orderable quantity
+  isDefault             // bool — pre-selected in choose-one group at quote time
+  commissionable_label  // string — links to agent commission table
+  commissionable        // bool — false = excluded from comp and SPIF
+}</div>
+  </div>
+
+  <!-- R3: Anchor Item Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R3</span> Anchor Item Rules</h2>
+    <table class="rules-table">
+      <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Code must match parent package code</td><td>Reject save if mismatch</td></tr>
+        <tr><td>Code must be unique across all packages</td><td>No two packages can share the same anchor code</td></tr>
+        <tr><td>required must be true</td><td>Reject save if false</td></tr>
+        <tr><td>chooseOne must be false</td><td>Reject save if true</td></tr>
+        <tr><td>Always first in items array</td><td>Cannot be reordered</td></tr>
+        <tr><td>Always locked</td><td>Cannot be deactivated by any parent override regardless of flags</td></tr>
+        <tr><td>Carries the primary service charge</td><td>amount / term prices reflect core service cost</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- R4: Package Role Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R4</span> Package Role — internal Flag</h2>
+    <table class="rules-table">
+      <thead><tr><th>internal value</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td><code>false</code></td><td>Appears at top level. Can be selected directly. Can also be linked as a sub-package in other packages simultaneously.</td></tr>
+        <tr><td><code>true</code></td><td>Hidden from top level. Only accessible as a sub-package when linked inside a parent.</td></tr>
+      </tbody>
+    </table>
+    <div class="rules-note">The internal flag does not affect content, items, or amounts. It can be changed at any time without affecting linked relationships.</div>
+  </div>
+
+  <!-- R5: Quantity Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R5</span> Item Quantity Rules</h2>
+    <p>minQty and maxQty are auto-set when required or chooseOne flags change. Manual override is permitted after auto-set.</p>
+    <table class="rules-table">
+      <thead><tr><th>required</th><th>chooseOne</th><th>minQty</th><th>maxQty</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td>true</td><td>false</td><td>1</td><td>1</td><td>Fixed — always ordered once. No user input. Locked from parent override.</td></tr>
+        <tr><td>true</td><td>true</td><td>1</td><td>1</td><td>Required choose-one — user must pick exactly one from the group.</td></tr>
+        <tr><td>false</td><td>true</td><td>0</td><td>1</td><td>Optional choose-one — user may pick one from the group.</td></tr>
+        <tr><td>false</td><td>false</td><td>0</td><td>N</td><td>Optional add-on — user enters quantity 0 to N. maxQty set at package build time.</td></tr>
+      </tbody>
+    </table>
+    <div class="rules-note"><strong>isDefault</strong> may only be set on items where chooseOne = true. Only one item per coGroup may have isDefault = true.</div>
+  </div>
+
+  <!-- R6: Choose-One Group Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R6</span> Choose-One Group Rules</h2>
+    <table class="rules-table">
+      <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Item-level group</td><td>Items sharing the same non-empty coGroup string form a mutually exclusive group. Must have at least 2 items.</td></tr>
+        <tr><td>All items in same package</td><td>All items in a coGroup must belong to the same package.</td></tr>
+        <tr><td>One default per group</td><td>Only one item per coGroup may have isDefault = true. Reject save if violated.</td></tr>
+        <tr><td>Sub-package-level group</td><td>If subPkgChooseOneGroup is set, all subPackageIds form a mutually exclusive group. User selects exactly one at quote time.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- R7: Parent Override Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R7</span> Parent Override Rules</h2>
+    <div class="code-block">overrides: {
+  [subPackageId]: {
+    [itemCode]: {
+      hidden:      bool         // deactivates item in this parent context only
+      price:       float | null // replaces item amount in this context; null = inherit
+      required:    bool | null  // overrides required flag; null = inherit
+      quoteReq:    bool | null  // overrides quoteReq; null = inherit
+      deliveryReq: bool | null  // overrides deliveryReq; null = inherit
+    }
+  }
+}</div>
+    <table class="rules-table">
+      <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Context-only</td><td>Overrides apply only within this parent. Sub-package is unchanged in all other contexts.</td></tr>
+        <tr><td>No cascade</td><td>Parent A overrides sub B. Sub B's own overrides on its children are independent.</td></tr>
+        <tr><td>Locked items cannot be overridden</td><td>required = true AND chooseOne = false. Reject hidden: true on locked items. Anchor item is always locked regardless of flags.</td></tr>
+        <tr><td>null = inherit</td><td>null override value means inherit from sub-package — do not apply override for that field.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- R8: Sub-Package Nesting Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R8</span> Sub-Package Nesting Rules</h2>
+    <table class="rules-table">
+      <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Unlimited depth</td><td>A sub-package may itself contain sub-packages. No depth limit.</td></tr>
+        <tr><td>No circular references</td><td>If B is a sub-package of A, A cannot be a sub-package of B at any depth. Enforce at save time.</td></tr>
+        <tr><td>Reusable</td><td>The same package may be linked as a sub-package in multiple parents simultaneously. Removing from one parent does not affect others.</td></tr>
+        <tr><td>Independent content</td><td>A sub-package's items and amounts are independent of its parents.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- R9: Amount Accumulation Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R9</span> Amount Accumulation Rules</h2>
+    <div class="code-block">deal_revenue = Σ (item_price × qty)       // all selected items
+deal_cost    = Σ (item_cost × qty)         // all selected items
+deal_comp    = Σ (item_price × qty × comp%) // commissionable items only
+deal_spif    = Σ (item_price × spif_mult)   // commissionable items only
+
+gross_margin = (revenue − cost) / revenue
+net_margin   = (revenue − cost − comp − spif) / revenue</div>
+    <table class="rules-table">
+      <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Margin calculated at deal level</td><td>Not per item or per package.</td></tr>
+        <tr><td>Override-repriced items</td><td>Use override price for margin in that context. Original catalog price unchanged.</td></tr>
+        <tr><td>commissionable: false items</td><td>Contribute to revenue and cost but not comp or SPIF.</td></tr>
+        <tr><td>SPIF is one-time</td><td>Shown as deal-level cost, not recurring.</td></tr>
+        <tr><td>Install margin separate</td><td>Shown alongside recurring margin, calculated independently.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- R10: ICB Gate Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R10</span> ICB Gate Rules</h2>
+    <div class="rules-note"><strong>Gate 1.</strong> Checked per item against the selected contract term. Must pass before a quote can be issued.</div>
+    <table class="rules-table">
+      <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>quoted_price &lt; ICB for term</td><td>Pricing approval required. Cannot advance to quote issuance.</td></tr>
+        <tr><td>Surface at configuration time</td><td>ICB violations must be shown during deal build — not only at submission.</td></tr>
+        <tr><td>ICB independent of comp/SPIF</td><td>ICB = cost + minimum margin floor. Comp/SPIF impact is a separate margin gate.</td></tr>
+        <tr><td>Approved exceptions</td><td>Must be logged with approver, date, and justification.</td></tr>
+        <tr><td>commissionable: false items</td><td>Still subject to ICB validation.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- R11: Margin Gate Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R11</span> Margin Gate Rules</h2>
+    <div class="rules-note"><strong>Gate 2.</strong> Evaluated after ICB gate. Both must pass for a clean deal. Thresholds below are placeholders pending Finance sign-off.</div>
+    <table class="rules-table">
+      <thead><tr><th>net_margin_pct</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>≥ 28%</td><td>Healthy</td><td>Deal proceeds normally.</td></tr>
+        <tr><td>15–27%</td><td>At risk</td><td>Flag to manager. Deal can proceed with acknowledgement logged.</td></tr>
+        <tr><td>&lt; 15%</td><td>Below floor</td><td>Approval required. Named approver and written justification.</td></tr>
+        <tr><td>&lt; 0%</td><td>Negative</td><td>Hard block. Senior approval required. Logged for finance review.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- R12: Validation Rules -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R12</span> Validation Rules — enforce at save time</h2>
+    <table class="rules-table">
+      <thead><tr><th>Rule</th><th>Enforcement</th></tr></thead>
+      <tbody>
+        <tr><td>No circular sub-package references</td><td>Reject if A contains B and B contains A at any depth</td></tr>
+        <tr><td>Anchor code unique across all packages</td><td>Reject if another package already uses the same anchor code</td></tr>
+        <tr><td>Anchor code must match package code</td><td>Reject if mismatch</td></tr>
+        <tr><td>Anchor item: required = true, chooseOne = false</td><td>Reject if violated</td></tr>
+        <tr><td>Only one isDefault per coGroup</td><td>Reject if more than one item has isDefault = true in same group</td></tr>
+        <tr><td>isDefault only on chooseOne items</td><td>Reject if isDefault = true on item with chooseOne = false</td></tr>
+        <tr><td>Locked items cannot be hidden by override</td><td>Reject override where hidden = true on item with required = true AND chooseOne = false</td></tr>
+        <tr><td>coGroup must have at least 2 items</td><td>Warn or reject if only one item in a group</td></tr>
+        <tr><td>maxQty must be ≥ minQty</td><td>Reject if violated</td></tr>
+        <tr><td>minQty must be ≥ 0</td><td>Reject if negative</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+  <!-- R13: Item Pricing Model -->
+  <div class="rules-section">
+    <h2><span class="rules-num">R13</span> Item Pricing Model — Catalog Ownership</h2>
+    <p>
+      This is a resolved architecture decision. The pricing attributes on an item are
+      catalog-level — they apply wherever that item appears across all packages.
+      There is no package-level price override. Price differences between service contexts
+      require a new item code.
+    </p>
+    <table class="rules-table">
+      <thead><tr><th>Scenario</th><th>Correct approach</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Same component, same price, used in multiple packages</td>
+          <td>One item code. Add to each package independently. Price is consistent everywhere.</td>
+        </tr>
+        <tr>
+          <td>Same component, different price in a specific package context</td>
+          <td>Create a new item code. Do not use package override to change price. Override is for flags only.</td>
+        </tr>
+        <tr>
+          <td>Price change on an existing item</td>
+          <td>Update the item in the catalog. Change reflects across all packages that include it.</td>
+        </tr>
+        <tr>
+          <td>Deactivate or hide an item in a specific parent package</td>
+          <td>Use the parent override model (R7). This is the correct use of overrides.</td>
+        </tr>
+        <tr>
+          <td>Change req / quoteReq / deliveryReq in a specific parent package</td>
+          <td>Use the parent override model (R7). Flag overrides are valid at the package level.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="rules-note">
+      <strong>Override boundary:</strong> The package override model (R7) handles contextual
+      deactivation and flag changes only. It does not handle price differences.
+      Price differences between service contexts = new item code in the catalog.
+    </div>
+    <div class="rules-note" style="background:var(--teal-light);border-left-color:var(--teal-mid);color:var(--teal-dark);">
+      <strong>Catalog impact:</strong> When a carrier or vendor changes pricing, update the
+      item once in the catalog. The change propagates to all packages that include it.
+      This is the intended behaviour — catalog is the single source of truth for pricing.
+    </div>
+  </div>
+
+</div>
+</div><!-- end tab-devrules -->
+
 <footer class="page-footer">
   OSS CPQ Architecture · Configure · Price · Quote
 </footer>
+
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector('[onclick="switchTab(\'' + name + '\')"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
 
 </body>
 </html>
